@@ -5,11 +5,26 @@
 
  object Main extends App {
    val st = new SplayTree()
+   st.addNode(5)
+   st.addNode(3)
+   st.addNode(13)
+   st.addNode(9)
+   println(st)
+
+   val f = st.find(13)
+
+   println(f)
+
    println(st)
  }
 
  class SplayTree {
    var tree: Option[SplayNode] = None
+
+   override def toString: String = {
+     val root = tree.map(_.toString)
+     s"SplayTree(root: $root)"
+   }
 
    private[this] def cmp(
      root: Option[SplayNode], otherValue: Int, comparator: (Int, Int) => Boolean
@@ -108,7 +123,8 @@
 
    def find(newValue: Int): Option[SplayNode] = {
      val found = tree.map(_.find(newValue))
-     found.flatMap(_ => splay(newValue, tree))
+     tree = found.flatMap(_ => splay(newValue, tree))
+     tree
    }
 
  }
@@ -117,6 +133,12 @@
    val value: Int = v
    val left: Option[SplayNode] = l
    val right: Option[SplayNode] = r
+
+   override def toString: String = {
+     val leftChild = left.map(_.toString)
+     val rightChild = right.map(_.toString)
+     s"SplayNode(value: $value, left: $leftChild, right: $rightChild)"
+   }
 
    def add(newValue: Int): SplayNode = {
      if (newValue < value) {
