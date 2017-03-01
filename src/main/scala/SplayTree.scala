@@ -1,6 +1,14 @@
+package splaytree
+
 /**
  * zig and zag are just large scale tree rotations that result in the element
  * searched for ending up at the root of the tree
+ *
+ * This splay tree's splay operations occur after a user looks for a node in the tree.
+ * If the node exists, the splay tree rotates the root node and its
+ * immediate children, choosing left or right or compound rotations
+ * depending on the next node's location in the path to the target node.
+ * When the target node has reached the root, the splay tree returns its root node.
  **/
 
  object Main extends App {
