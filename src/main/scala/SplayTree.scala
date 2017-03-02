@@ -112,55 +112,47 @@ package splaytree
 
      if (compare(root, targetValue, (x, y) => x == y)) root //done
      else if (compare(root, targetValue, (x, y) => x > y)) {
+       //will ultimately rotate right
+       //left child is new parent
+       val newRoot = root.flatMap(_.left)
 
-        if (compare(root.flatMap(_.left), targetValue, (a, b) => a < b)) {
-          //left right rotation
-          splay(
-            targetValue,
-            rotateLeftRight(root)
-          )
+       if (compare(newRoot, targetValue, (a, b) => a < b)) {
+         //left right rotation
+         splay(
+           targetValue,
+           rotateLeftRight(root)
+         )
 
-        }
-        else {
-          //rotate root right
-          splay(
-            targetValue,
-            rotateRight(root.flatMap(_.left), root)
-          )
-        }
+       }
+       else {
+         //rotate root right
+         splay(
+           targetValue,
+           rotateRight(newRoot, root)
+         )
+       }
 
      }
      else if (compare(root, targetValue, (x, y) => x < y)) {
-       //rotate left, root less than target
-       val newRoot = root.flatMap(
-         _.right.flatMap(r => {
-           if (targetValue < r.value) {
+       //ultimately rotate left, root less than target
+       val newRoot = root.flatMap(_.right)
 
-             r.left.map(l => {
-                 new SplayNode(
-                   l.value,
-                   l.left,
-                   Some(
-                     new SplayNode(
-                       r.value,
-                       l.right,
-                       r.right
-                     )
-                  )
-               )
-             })
+       if (compare(newRoot, targetValue, (a, b) => a > b)) {
+         //newRoot's value is greater than the target
+         //right left rotation
+         splay(
+           targetValue,
+           rotateRightLeft(root)
+         )
 
-          }
-          else Some(r)
-       })
-      )
-
-       //rotate left and call splay
-       //make root left child et c
-       splay(
-         targetValue,
-         rotateLeft(newRoot, root)
-       )
+       }
+       else {
+         //rotate root left
+         splay(
+           targetValue,
+           rotateLeft(newRoot, root)
+         )
+       }
 
      }
      else root //you messed up somewhere
