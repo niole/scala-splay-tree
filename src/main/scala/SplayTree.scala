@@ -119,16 +119,12 @@ package splaytree
      rotateLeft(newParent, oldParent)
    }
 
-
+   /**
+    * rotates subtree at root such that
+    * target node comes close and eventually is
+    * the root
+    **/
    private[this] def splay(targetValue: Int, root: Option[SplayNode]): Option[SplayNode] = {
-     //only run if tree contains target and target is not root
-
-     //always rotate the root the right way
-     //then as you transfer the leaves
-     //make sure to do an opposite rotation in need to
-
-     //if rotating root right, and target is greater than root's left child
-     //accomplish a left rotation for this subnode and then continue main rotation
 
 
      if (compare(root, targetValue, (x, y) => x == y)) root //done
@@ -180,12 +176,18 @@ package splaytree
 
    }
 
+   /**
+    * public alias for add method
+    **/
    def addNode(newValue: Int): Unit = tree = add(newValue)
 
+   /**
+    * retrieves specified node and splays tree if node contained in tree
+    **/
    def find(newValue: Int): Option[SplayNode] = {
      val found = tree.map(_.find(newValue))
-     tree = found.flatMap(_ => splay(newValue, tree))
-     tree
+     tree = found.flatMap(_ => splay(newValue, tree)).orElse(tree)
+     found.flatten
    }
 
  }

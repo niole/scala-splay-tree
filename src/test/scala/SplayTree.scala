@@ -166,4 +166,37 @@ class SplayTreeTest extends FlatSpec {
     assert(found.get.value === 9)
   }
 
+  it should "leave tree unsplayed and return None if node not found in the tree" in {
+    val st = new SplayTree()
+
+    st.addNode(5)
+    st.addNode(3)
+    st.addNode(4)
+    st.addNode(13)
+    st.addNode(9)
+
+    var root = st.getTree
+
+    assert(root.get.value === 5)
+    assert(root.get.left.get.value === 3)
+    assert(root.get.left.get.right.get.value === 4)
+    assert(root.get.left.get.left === None)
+    assert(root.get.right.get.left.get.value === 9)
+    assert(root.get.right.get.right === None)
+
+    val found = st.find(1)
+
+    assert(found === None)
+
+    root = st.getTree
+
+    assert(root.get.value === 5)
+    assert(root.get.left.get.value === 3)
+    assert(root.get.left.get.right.get.value === 4)
+    assert(root.get.left.get.left === None)
+    assert(root.get.right.get.left.get.value === 9)
+    assert(root.get.right.get.right === None)
+
+  }
+
 }
