@@ -11,23 +11,11 @@ package splaytree
  * When the target node has reached the root, the splay tree returns its root node.
  **/
 
- object Main extends App {
-   val st = new SplayTree()
-   st.addNode(5)
-   st.addNode(3)
-   st.addNode(13)
-   st.addNode(9)
-   println(st)
-
-   val f = st.find(13)
-
-   println(f)
-
-   println(st)
- }
 
  class SplayTree {
-   var tree: Option[SplayNode] = None
+   private var tree: Option[SplayNode] = None
+
+   def getTree: Option[SplayNode] = tree
 
    override def toString: String = {
      val root = tree.map(_.toString)
