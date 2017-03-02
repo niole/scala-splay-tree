@@ -30,6 +30,38 @@ package splaytree
 
    private[this] def add(newValue: Int): Option[SplayNode] = tree.map(root => root.add(newValue)).orElse(init(newValue))
 
+   /**
+    * newParent displaces oldParent
+    * oldParent becomes left child of newParent
+    * leaves are reallocated
+    * all done while maintaining BST invariant
+    **/
+   private[this] def rotateLeft(newParent: Option[SplayNode], oldParent: Option[SplayNode]): Option[SplayNode] = {
+     newParent.map(np =>
+       new SplayNode(
+         np.value,
+         oldParent.map(op => new SplayNode(op.value, op.left, np.left)),
+         np.right
+       )
+     )
+   }
+
+   /**
+    * newParent displaces oldParent
+    * oldParent becomes right child of newParent
+    * leaves are reallocated
+    * all done while maintaining BST invariant
+    **/
+   private[this] def rotateRight(newParent: Option[SplayNode], oldParent: Option[SplayNode]): Option[SplayNode] = {
+     newParent.map(np =>
+       new SplayNode(
+         np.value,
+         np.left,
+         oldParent.map(op => new SplayNode(op.value, np.right, op.right))
+       )
+     )
+   }
+
    private[this] def splay(targetValue: Int, root: Option[SplayNode]): Option[SplayNode] = {
      //only run if tree contains target and target is not root
 
@@ -59,17 +91,11 @@ package splaytree
          })
        )
 
-       //rotate root
+       //rotate root right
        //pass newRoot's right to old root's left, old root becomes newRoot's right
        splay(
          targetValue,
-         newRoot.map(nr =>
-           new SplayNode(
-             nr.value,
-             nr.left,
-             root.map(r => new SplayNode(r.value, nr.right, r.right))
-           )
-         )
+         rotateRight(newRoot, root)
        )
      }
      else if (compare(root, targetValue, (x, y) => x < y)) {
@@ -101,13 +127,7 @@ package splaytree
        //make root left child et c
        splay(
          targetValue,
-         newRoot.map(nr =>
-           new SplayNode(
-             nr.value,
-             root.map(r => new SplayNode(r.value, r.left, nr.left)),
-             nr.right
-           )
-         )
+         rotateLeft(newRoot, root)
        )
 
      }
