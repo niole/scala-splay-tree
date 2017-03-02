@@ -62,12 +62,27 @@ package splaytree
      )
    }
 
+   /**
+    * In order to maintain the BST invariant,
+    * rotates right grandchild to the left,
+    * then rotates subtree to the right such that
+    * the right child of the old parent's left child is the new root
+    **/
    private[this] def rotateLeftRight(oldParent: Option[SplayNode]): Option[SplayNode] = {
      val newParent = oldParent.flatMap(
        _.left.flatMap(l => {
            l.right.map(r => {
-               val newLeft = Some(new SplayNode(l.value, l.left, r.left))
-               new SplayNode(r.value, newLeft, r.right)
+               new SplayNode(
+                 r.value,
+                 Some(
+                   new SplayNode(
+                     l.value,
+                     l.left,
+                     r.left
+                   )
+                 ),
+                 r.right
+               )
              })
          })
      )
@@ -76,6 +91,12 @@ package splaytree
 
   }
 
+   /**
+    * In order to maintain the BST invariant,
+    * rotates left grandchild to the right,
+    * then rotates subtree to the left such that
+    * the left child of the old parent's right child is the new root
+    **/
    private[this] def rotateRightLeft(oldParent: Option[SplayNode]): Option[SplayNode] = {
        val newParent = oldParent.flatMap(
          _.right.flatMap(r => {
