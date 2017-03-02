@@ -62,6 +62,43 @@ package splaytree
      )
    }
 
+   private[this] def rotateLeftRight(oldParent: Option[SplayNode]): Option[SplayNode] = {
+     val newParent = oldParent.flatMap(
+       _.left.flatMap(l => {
+           l.right.map(r => {
+               val newLeft = Some(new SplayNode(l.value, l.left, r.left))
+               new SplayNode(r.value, newLeft, r.right)
+             })
+         })
+     )
+
+     rotateRight(newParent, oldParent)
+
+  }
+
+   private[this] def rotateRightLeft(oldParent: Option[SplayNode]): Option[SplayNode] = {
+       val newParent = oldParent.flatMap(
+         _.right.flatMap(r => {
+           r.left.map(l => {
+               new SplayNode(
+                 l.value,
+                 l.left,
+                 Some(
+                   new SplayNode(
+                     r.value,
+                     l.right,
+                     r.right
+                   )
+                )
+             )
+           })
+       })
+      )
+
+     rotateLeft(newParent, oldParent)
+   }
+
+
    private[this] def splay(targetValue: Int, root: Option[SplayNode]): Option[SplayNode] = {
      //only run if tree contains target and target is not root
 
@@ -76,27 +113,22 @@ package splaytree
      if (compare(root, targetValue, (x, y) => x == y)) root //done
      else if (compare(root, targetValue, (x, y) => x > y)) {
 
-       val newRoot = root.flatMap(
-         _.left.flatMap(l => {
-           if (targetValue > l.value) {
-             //rotate right,
-             //left becomes parent's right, parent becomes left child
+        if (compare(root.flatMap(_.left), targetValue, (a, b) => a < b)) {
+          //left right rotation
+          splay(
+            targetValue,
+            rotateLeftRight(root)
+          )
 
-             l.right.map(r => {
-                 val newLeft = Some(new SplayNode(l.value, l.left, r.left))
-                 new SplayNode(r.value, newLeft, r.right)
-               })
-           }
-           else Some(l)
-         })
-       )
+        }
+        else {
+          //rotate root right
+          splay(
+            targetValue,
+            rotateRight(root.flatMap(_.left), root)
+          )
+        }
 
-       //rotate root right
-       //pass newRoot's right to old root's left, old root becomes newRoot's right
-       splay(
-         targetValue,
-         rotateRight(newRoot, root)
-       )
      }
      else if (compare(root, targetValue, (x, y) => x < y)) {
        //rotate left, root less than target
