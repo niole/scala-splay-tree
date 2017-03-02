@@ -22,7 +22,7 @@ package splaytree
      s"SplayTree(root: $root)"
    }
 
-   private[this] def cmp(
+   private[this] def compare(
      root: Option[SplayNode], otherValue: Int, comparator: (Int, Int) => Boolean
    ): Boolean = root.map(r => comparator(r.value, otherValue)).getOrElse(false)
 
@@ -41,8 +41,8 @@ package splaytree
      //accomplish a left rotation for this subnode and then continue main rotation
 
 
-     if (cmp(root, targetValue, (x, y) => x == y)) root //done
-     else if (cmp(root, targetValue, (x, y) => x > y)) {
+     if (compare(root, targetValue, (x, y) => x == y)) root //done
+     else if (compare(root, targetValue, (x, y) => x > y)) {
 
        val newRoot = root.flatMap(
          _.left.flatMap(l => {
@@ -72,7 +72,7 @@ package splaytree
          )
        )
      }
-     else if (cmp(root, targetValue, (x, y) => x < y)) {
+     else if (compare(root, targetValue, (x, y) => x < y)) {
        //rotate left, root less than target
        val newRoot = root.flatMap(
          _.right.flatMap(r => {
