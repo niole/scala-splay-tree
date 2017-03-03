@@ -96,7 +96,7 @@ package splaytree
          })
      )
 
-     splayRenderCallback(newParent)
+     splayRenderCallback(Some(new SplayNode(oldParent.get.value, newParent, oldParent.get.right)))
 
      rotateRight(newParent, oldParent)
 
@@ -127,7 +127,7 @@ package splaytree
        })
       )
 
-     splayRenderCallback(newParent)
+     splayRenderCallback(Some(new SplayNode(oldParent.get.value, oldParent.get.left, newParent)))
 
      rotateLeft(newParent, oldParent)
    }
@@ -243,6 +243,7 @@ package splaytree
   /**
    * once find correct node, zig and zag it back up to the root
    * and return the root
+   * if node doesn't exist in tree, returns None
    **/
   def find(withValue: Int): Option[SplayNode] = {
     if (withValue < value) {
