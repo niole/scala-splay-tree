@@ -14,7 +14,7 @@ package splaytree
 
  class SplayTree {
 
-   private var splayRenderCallback: (Option[SplayNode]) => Option[SplayNode] = (None) => None
+   private var splayRenderCallback: (Option[SplayNode]) => Option[SplayNode] = (x: Option[SplayNode]) => x
 
    private var tree: Option[SplayNode] = None
 
