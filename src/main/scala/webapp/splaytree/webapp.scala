@@ -26,7 +26,7 @@ object SplayTreeVis extends JSApp {
       )
     }
 
-    val inputBox: InputBox = new InputBox("enter a number", "Add a Node to the Splay Tree")
+    val inputBox: InputBox = new InputBox("enter a number", "Add a Node to the Splay Tree", true)
 
     var st = new SplayTree((x: scala.Option[SplayNode]) => {
 

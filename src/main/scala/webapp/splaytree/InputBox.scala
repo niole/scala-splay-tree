@@ -9,7 +9,7 @@ import scalatags.JsDom.TypedTag
 import scalatags.JsDom.short.*
 import window.{ setTimeout, clearTimeout }
 
-class InputBox(placeholder: String, header: String, delay: Int = 200) {
+class InputBox(placeholder: String, header: String, shouldRenderOnDelay: Boolean = false, delay: Int = 500) {
   val i: Input = input(*.placeholder:=placeholder).render
   val visContainer: Div = div.render
   val container: Div = div.render
@@ -53,11 +53,18 @@ class InputBox(placeholder: String, header: String, delay: Int = 200) {
 
   def updateVis(newVisData: TypedTag[Div]): Unit = {
 
-    updateQ = updateQ ++ List(newVisData)
+    if (shouldRenderOnDelay) {
 
-    if (updateQ.length == 1) {
-      //run
-      renderOnDelay
+      updateQ = updateQ ++ List(newVisData)
+
+      if (updateQ.length == 1) {
+        //run
+        renderOnDelay
+      }
+    }
+    else {
+      visContainer.innerHTML = ""
+      visContainer.appendChild(div(newVisData).render)
     }
 
   }
@@ -73,7 +80,7 @@ class InputBox(placeholder: String, header: String, delay: Int = 200) {
       if (updateQ.length > 0) {
         renderOnDelay
       }
-    }, 500)
+    }, delay)
   }
 
 }
