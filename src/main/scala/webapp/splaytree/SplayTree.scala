@@ -12,8 +12,13 @@ package splaytree
  **/
 
 
- class SplayTree(splayRenderCallback: (Option[SplayNode]) => Option[SplayNode] = (None) => None ) {
+ class SplayTree {
+
+   private var splayRenderCallback: (Option[SplayNode]) => Option[SplayNode] = (None) => None
+
    private var tree: Option[SplayNode] = None
+
+   def setRenderCallback(cb: (Option[SplayNode]) => Option[SplayNode]): Unit = splayRenderCallback = cb
 
    def getTree: Option[SplayNode] = tree
 
