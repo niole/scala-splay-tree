@@ -12,7 +12,7 @@ package splaytree
  **/
 
 
- class SplayTree {
+ class SplayTree(splayRenderCallback: (Option[SplayNode]) => Option[SplayNode] = (None) => None ) {
    private var tree: Option[SplayNode] = None
 
    def getTree: Option[SplayNode] = tree
@@ -37,13 +37,15 @@ package splaytree
     * all done while maintaining BST invariant
     **/
    private[this] def rotateLeft(newParent: Option[SplayNode], oldParent: Option[SplayNode]): Option[SplayNode] = {
-     newParent.map(np =>
+     val newRoot = newParent.map(np =>
        new SplayNode(
          np.value,
          oldParent.map(op => new SplayNode(op.value, op.left, np.left)),
          np.right
        )
      )
+
+     splayRenderCallback(newRoot)
    }
 
    /**
@@ -53,13 +55,15 @@ package splaytree
     * all done while maintaining BST invariant
     **/
    private[this] def rotateRight(newParent: Option[SplayNode], oldParent: Option[SplayNode]): Option[SplayNode] = {
-     newParent.map(np =>
+     val newRoot = newParent.map(np =>
        new SplayNode(
          np.value,
          np.left,
          oldParent.map(op => new SplayNode(op.value, np.right, op.right))
        )
      )
+
+     splayRenderCallback(newRoot)
    }
 
    /**
@@ -86,6 +90,8 @@ package splaytree
              })
          })
      )
+
+     splayRenderCallback(newParent)
 
      rotateRight(newParent, oldParent)
 
@@ -115,6 +121,8 @@ package splaytree
            })
        })
       )
+
+     splayRenderCallback(newParent)
 
      rotateLeft(newParent, oldParent)
    }
@@ -179,7 +187,7 @@ package splaytree
    /**
     * public alias for add method
     **/
-   def addNode(newValue: Int): Unit = tree = add(newValue)
+   def addNode(newValue: Int): Unit = tree = splayRenderCallback(add(newValue))
 
    /**
     * retrieves specified node and splays tree if node contained in tree

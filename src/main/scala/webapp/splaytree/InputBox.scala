@@ -5,6 +5,7 @@ import dom._
 import org.scalajs.dom.html._
 
 import scalatags.JsDom.all._
+import scalatags.JsDom.TypedTag
 import scalatags.JsDom.short.*
 import window.{ setTimeout, clearTimeout }
 
@@ -14,6 +15,7 @@ class InputBox(placeholder: String, header: String, delay: Int = 200) {
   val container: Div = div.render
   var renderCallBack: Int => Unit  = (n: Int) => {}
   val debouncer: () => Unit = getDebouncer(onKeyUp)
+  var updateQ: List[TypedTag[Div]] = List[TypedTag[Div]]()
 
   document.body.appendChild(
     container.appendChild(
@@ -49,9 +51,29 @@ class InputBox(placeholder: String, header: String, delay: Int = 200) {
 
   def setRenderCallBack(cb: Int => Unit): Unit = renderCallBack = cb
 
-  def updateVis(newVisData: Div): Unit = {
-    visContainer.innerHTML = ""
-    visContainer.appendChild(div(newVisData).render)
+  def updateVis(newVisData: TypedTag[Div]): Unit = {
+
+    updateQ = updateQ ++ List(newVisData)
+
+    if (updateQ.length == 1) {
+      //run
+      renderOnDelay
+    }
+
+  }
+
+  def renderOnDelay: Unit = {
+    setTimeout(() => {
+      val newVisData = updateQ.head
+      updateQ = updateQ.tail
+
+      visContainer.innerHTML = ""
+      visContainer.appendChild(div(newVisData).render)
+
+      if (updateQ.length > 0) {
+        renderOnDelay
+      }
+    }, 500)
   }
 
 }
