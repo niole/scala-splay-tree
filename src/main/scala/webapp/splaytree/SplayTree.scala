@@ -216,6 +216,10 @@ package splaytree
      s"SplayNode(value: $value, left: $leftChild, right: $rightChild)"
    }
 
+   /**
+    * adds a new node to the tree such that the BST invariant is maintained
+    * makes sure to not add duplicate values
+    **/
    def add(newValue: Int): SplayNode = {
      if (newValue < value) {
 
@@ -226,13 +230,14 @@ package splaytree
         )
 
      }
-     else {
+     else if (newValue > value) {
        new SplayNode(
          value,
          left,
          right.map(_.add(newValue)).orElse(Some(new SplayNode(newValue, None, None)))
        )
      }
+     else this
   }
 
   /**
